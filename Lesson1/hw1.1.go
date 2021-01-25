@@ -1,18 +1,20 @@
 package main
+
 import (
-	"fmt"
 	"bufio"
+	"fmt"
 	"os"
 )
+
 //hw
 func min2(a, b int) int {
-	if (a > b) {
+	if a > b {
 		return b
 	}
 	return a
 }
 func max2(a, b int) int {
-	if (a > b) {
+	if a > b {
 		return a
 	}
 	return b

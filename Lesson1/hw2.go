@@ -1,7 +1,8 @@
 package main
+
 import (
-	"fmt"
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -21,7 +22,7 @@ func fib(n int) int {
 	if dp[n] != 0 {
 		return dp[n]
 	}
-	dp[n] = fib(n - 1) + fib(n - 2)
+	dp[n] = fib(n-1) + fib(n-2)
 	return dp[n]
 }
 func main() {
