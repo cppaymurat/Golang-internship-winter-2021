@@ -24,7 +24,7 @@ func (Head *Node) Push(Val int) *Node {
 		Head = Head.Next
 	}
 	Head.Next = NewNode(Val)
-	Head.Next = Head.Next
+	Head = Head.Next
 	return Helper
 }
 
