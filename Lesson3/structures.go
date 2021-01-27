@@ -21,8 +21,7 @@ type Update struct {
 }
 
 type Message struct {
-	Chat Chat `json:"chat"`
-	//Message_id int `json:"message_id"`
+	Chat Chat   `json:"chat"`
 	Text string `json:"text"`
 }
 
