@@ -1,18 +1,56 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
+	"net/http"
+	"sync/atomic"
 )
 
+var client = http.Client{}
+var counter int32
+type Urls struct {
+	Urls []string `json:"urls"`
+}
+
+func asyncHandler(writer http.ResponseWriter, request *http.Request) {
+	counter = 0
+	decoder := json.NewDecoder(request.Body)
+	urls := Urls{}
+	decoder.Decode(&urls)
+	for _, url := range urls.Urls {
+		go makeRequest(url)
+	}
+}
+
+func syncHandler(writer http.ResponseWriter, request *http.Request) {
+	counter = 0
+	decoder := json.NewDecoder(request.Body)
+	urls := Urls{}
+	decoder.Decode(&urls)
+	for _, url := range urls.Urls {
+		makeRequest(url)
+	}
+}
+
+func makeRequest(url string) {
+	request, ok := http.NewRequest("GET", url, nil)
+	atomic.AddInt32(&counter, 1)
+	if ok != nil {
+		panic(ok)
+	}
+	client.Do(request)
+	fmt.Println(atomic.LoadInt32(&counter))
+}
+
+func runAsync() {
+	Router := mux.NewRouter()
+	Router.HandleFunc("/asyncHandler", asyncHandler)
+	Router.HandleFunc("/syncHandler", syncHandler)
+	http.ListenAndServe(":8000", Router)
+}
+
 func main() {
-	all_goods := make([][][]int32, 0)
-	all_goods = append(all_goods, [][]int32{{2, 7, 6}, {9, 5, 1}, {4, 3, 8}})
-	all_goods = append(all_goods, [][]int32{{2, 9, 4}, {7, 5, 3}, {6, 1, 8}})
-	all_goods = append(all_goods, [][]int32{{4, 3, 8}, {9, 5, 1}, {2, 7, 6}})
-	all_goods = append(all_goods, [][]int32{{4, 9, 2}, {3, 5, 7}, {8, 1, 6}})
-	all_goods = append(all_goods, [][]int32{{6, 1, 8}, {7, 5, 3}, {2, 9, 4}})
-	all_goods = append(all_goods, [][]int32{{6, 7, 2}, {1, 5, 9}, {8, 3, 4}})
-	all_goods = append(all_goods, [][]int32{{8, 1, 6}, {3, 5, 7}, {4, 9, 2}})
-	all_goods = append(all_goods, [][]int32{{8, 3, 4}, {1, 5, 9}, {6, 7, 2}})
-	fmt.Print(all_goods[0])
+	runAsync()
 }
