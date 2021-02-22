@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	botToken := "bot1538871626:AAFOsOEgv2jiLOHKTsYrox2SAp34Q7w37y0"
+	botToken := ""
 	botAPI := "https://api.telegram.org/"
 	botURL := botAPI + botToken
 	offset := 0
